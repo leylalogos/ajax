@@ -10,7 +10,8 @@ class MenuManagementController extends Controller
     public function index()
     {
         $menus = Menu::paginate(8);
-        return View('menuManagement')->with('menus', $menus);
+        $all = Menu::all();
+        return View('menuManagement')->with('menus', $menus)->with('all', $all);
     }
     public function create(Request $request)
     {
@@ -20,8 +21,14 @@ class MenuManagementController extends Controller
         ]);
         return response(['message' => 'menu created'], 201);
     }
-    public function update()
+    public function update(Request $request)
     {
+        Menu::find($request->id)->update([
+            "name" => $request->name,
+            "menu_id" => $request->parent_id == 0 ? null : $request->parent_id,
+        ]);
+        return response(['message' => 'menu updated'], 200);
+
     }
     public function delete()
     {
